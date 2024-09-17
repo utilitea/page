@@ -1,310 +1,92 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- Meta Tags para compartilhar no WhatsApp e redes sociais -->
-<meta property="og:title" content="ColorFocus: Jogo da Memória">
-<meta property="og:description" content="Desafie sua memória com o jogo ColorFocus! Tente seguir a sequência de cores e divirta-se.">
-<meta property="og:image" content="logo.png">
-<meta property="og:url" content="https://www.seusite.com/jogo"> <!-- Substitua com a URL do seu jogo -->
-<meta property="og:type" content="website">
-<link rel="icon" href="logo.png" type="image/png">
-<title>ColorFocus: Jogo da Memória</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=5">
+    <title>Acesso</title>
+    <link rel="icon" href="https://blogger.googleusercontent.com/img/a/AVvXsEh40Eulpe-YZG7lV9fvJJRnmd9ZurKrH4GhrSzziAPiGdLqjuOX-xNDcYews2dBUpHqvfVozuL22ISDNktw8yMGvRPMkl6Ykc_KF7uQ87UiaVkT0o8fdYgcEaUWP6Y9oMSVDcQSkM8N-McMsNF_RO59R5z_-O2fDANLR8gF03M3LwcskULu_mwM6IVxe7nu=s814" type="image/png">
+    <meta property="og:title" content="Acesso">
+    <meta property="og:image" content="https://avatars.githubusercontent.com/u/176923283?v=4">
+    <meta property="og:url" content="https://utilitea.glide.page">
+    <meta property="og:type" content="website">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f8ff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            padding: 20px; /* Adicionado para espaçamento em telas menores */
+            font-family: Calibri;
+            margin: 20px;
+            font-size: 18px;
+            background: radial-gradient(circle at center, 
+                rgba(255, 0, 0, 0.5), 
+                rgba(0, 255, 0, 0.5), 
+                rgba(0, 0, 255, 0.5), 
+                rgba(255, 255, 255, 0.3));
+            background-size: 200% 200%;
+            animation: gradient 15s ease infinite;
         }
-
-        #game-container {
-            text-align: center;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 400px; /* Limita a largura máxima no desktop */
+        .container {
+            max-width: 800px;
+            margin: auto;
         }
-
         h1 {
-            font-size: 2rem;
-            margin-bottom: 20px;
-        }
-
-        #grid-container {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            grid-gap: 10px;
-            justify-content: center;
-        }
-
-        .color-box {
-            width: 100%;
-            padding-top: 100%; /* Aspect ratio 1:1 */
-            position: relative;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .color-box.active {
-            transform: scale(1.2);
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
-            transition: transform 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
-        }
-
-        #blue { background-color: #0000FF; }
-        #green { background-color: #A8D700; }
-        #yellow { background-color: #FFFF00; }
-        #purple { background-color: #800080; }
-
-        .icon {
-            position: absolute; /* Posicionamento absoluto para centralizar a imagem */
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%); /* Centraliza a imagem */
-            width: 70%; /* Tamanho ajustável da imagem */
-            height: 70%; /* Mantém a imagem proporcional */
-            opacity: 0.5;
-            transition: opacity 0.2s;
-        }
-
-        .color-box.active .icon {
-            opacity: 1;
-        }
-
-        #message {
-            font-size: 1.2rem;
-            margin: 20px 0;
-            word-wrap: break-word;
-            max-width: 100%;
-        }
-
-        #start-button, #restart-button, #sound-button {
-            padding: 10px 20px;
-            font-size: 1.2rem;
-            cursor: pointer;
-            border: none;
-            border-radius: 5px;
-            background-color: #007bff;
-            color: white;
-            transition: background-color 0.2s;
-            margin: 5px;
-            width: 100%; /* Botões ocupam toda a largura no celular */
-        }
-
-        #start-button:hover, #restart-button:hover, #sound-button:hover {
-            background-color: #0056b3;
-        }
-
-        .title-container {
             text-align: center;
+        }
+        .introduction {
+            border: none;
+            padding: 5px;
             margin-bottom: 20px;
+            border-radius: 15px;
+            text-align: justify;
         }
-        
-        #game-title {
-            font-size: 2.5rem;
-            margin: 0;
-            line-height: 1.2;
+        .selection-container {
+            margin-top: 30px;
+            border: 1px solid #000000;
+            border-radius: 15px;
+            padding: 20px;
         }
-
-        #game-subtitle {
-            font-size: 1.5rem;
-            margin: 0;
-            font-weight: 300;
-            color: #666;
+        .selection-container select {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 10px;
+            border: 1px solid #D2691E;
+            background-color: #ffffff;
+            color: #333333;
         }
-
-        /* Media Queries para dispositivos menores */
-        @media (max-width: 600px) {
-            h1 {
-                font-size: 1.5rem;
-            }
-
-            #game-title {
-                font-size: 2rem;
-            }
-
-            #game-subtitle {
-                font-size: 1.2rem;
-            }
-
-            .color-box {
-                padding-top: 100%;
-            }
-
-            .icon {
-                width: 60%;
-                height: 60%;
-            }
-
-            #message {
-                font-size: 1rem;
-            }
-
-            #start-button, #restart-button, #sound-button {
-                font-size: 1rem;
-            }
+        .selection-container select:focus {
+            outline: none;
+            border-color: #499fdb;
         }
-
+        @keyframes gradient {
+            0% { background-position: 0% 0%; }
+            50% { background-position: 100% 100%; }
+            100% { background-position: 0% 0%; }
+        }
     </style>
 </head>
 <body>
-
-    <div id="game-container">
-        <div class="title-container">
-            <h1 id="game-title">ColorFocus</h1>
-           <h2 id="game-subtitle">Jogo da memória</h2>
+<div class="container">
+    <center>
+    <h2>Acesso</h2>
+    </center>
+    <div class="introduction">
+        <p></p>
         </div>
-        <div id="grid-container">
-            <div class="color-box" id="blue">
-                <img src="agua.png" alt="Água" class="icon">
-            </div>
-            <div class="color-box" id="green">
-                <img src="vento.png" alt="Ar" class="icon">
-            </div>
-            <div class="color-box" id="yellow">
-                <img src="fogo.png" alt="Fogo" class="icon">
-            </div>
-            <div class="color-box" id="purple">
-                <img src="terra.png" alt="Terra" class="icon">
-            </div>
-        </div>
-        <p id="message">Clique no botão para começar o jogo!</p>
-        <button id="start-button">Iniciar Jogo</button>
-        <button id="restart-button" style="display:none;">Recomeçar</button>
-        <button id="sound-button">Desligar Som</button>
-
-        <audio id="do" src="do.mp3"></audio>
-        <audio id="re" src="re.mp3"></audio>
-        <audio id="mi" src="mi.mp3"></audio>
-        <audio id="fa" src="fa.mp3"></audio>
+    <div class="selection-container">
+        <label for="pageSelect">Escolha um teste:</label>
+        <select id="pageSelect" onchange="navigateToPage()">
+            <option value="">-- Selecione --</option>
+            <option value="ColorFocus.html">ColorFocus</option>                       
+        </select>
     </div>
+</div>
 
-    <script>
-        const colors = ['blue', 'green', 'yellow', 'purple'];
-        let sequence = [];
-        let playerSequence = [];
-        let level = 0;
-
-        const colorBoxes = document.querySelectorAll('.color-box');
-        const startButton = document.getElementById('start-button');
-        const restartButton = document.getElementById('restart-button');
-        const message = document.getElementById('message');
-
-        let soundOn = true;
-
-        document.getElementById('sound-button').addEventListener('click', function() {
-            soundOn = !soundOn;
-            this.textContent = soundOn ? 'Desligar Som' : 'Ligar Som';
-        });
-
-        const soundMap = {
-            blue: 'do',
-            green: 're',
-            yellow: 'mi',
-            purple: 'fa'
-        };
-
-        function playSound(color) {
-            if (soundOn) {
-                const audio = document.getElementById(soundMap[color]);
-                if (audio) {
-                    audio.currentTime = 0;
-                    audio.play();
-                }
-            }
+<script>
+    function navigateToPage() {
+        const select = document.getElementById('pageSelect');
+        const selectedValue = select.value;
+        if (selectedValue) {
+            window.location.href = selectedValue;
         }
-
-        function startGame() {
-            level = 0;
-            sequence = [];
-            playerSequence = [];
-            startButton.style.display = 'none';
-            restartButton.style.display = 'none';
-            message.textContent = 'Observe a sequência...';
-            nextRound();
-        }
-
-        function nextRound() {
-            playerSequence = [];
-            level++;
-            sequence.push(colors[Math.floor(Math.random() * colors.length)]);
-            message.textContent = `Nível ${level}`;
-            playSequence();
-        }
-
-        function playSequence() {
-            let i = 0;
-            disablePlayerInput();
-            const interval = setInterval(() => {
-                flashColor(sequence[i]);
-                i++;
-                if (i >= sequence.length) {
-                    clearInterval(interval);
-                    enablePlayerInput();
-                }
-            }, 1000);
-        }
-
-        function flashColor(color) {
-            const box = document.getElementById(color);
-            playSound(color);
-            box.classList.add('active');
-            setTimeout(() => {
-                box.classList.remove('active');
-            }, 500);
-        }
-
-        function enablePlayerInput() {
-            message.textContent = 'Sua vez! Clique na sequência correta.';
-            colorBoxes.forEach(box => {
-                box.addEventListener('click', handlePlayerClick);
-            });
-        }
-
-        function disablePlayerInput() {
-            colorBoxes.forEach(box => {
-                box.removeEventListener('click', handlePlayerClick);
-            });
-        }
-
-        function handlePlayerClick(event) {
-            const clickedColor = event.currentTarget.id;
-            playerSequence.push(clickedColor);
-            flashColor(clickedColor);
-
-            if (playerSequence[playerSequence.length - 1] !== sequence[playerSequence.length - 1]) {
-                gameOver();
-                return;
-            }
-
-            if (playerSequence.length === sequence.length) {
-                disablePlayerInput();
-                setTimeout(nextRound, 1000);
-            }
-        }
-
-        function gameOver() {
-            disablePlayerInput();
-            message.textContent = 'Você errou! Vamos tentar de novo?';
-            restartButton.style.display = 'inline';
-        }
-
-        startButton.addEventListener('click', startGame);
-        restartButton.addEventListener('click', startGame);
-    </script>
+    }
+</script>
 </body>
 </html>
