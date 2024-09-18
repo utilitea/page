@@ -243,6 +243,7 @@
         <audio id="re" src="re.mp3"></audio>
         <audio id="mi" src="mi.mp3"></audio>
         <audio id="fa" src="fa.mp3"></audio>
+        <audio id="perdeu" src="perdeu.mp3"></audio>
     </div>
 
     <script>
@@ -363,6 +364,8 @@
             disablePlayerInput();
             message.textContent = 'Você errou! Vamos tentar de novo?';
             restartButton.style.display = 'inline';
+            const perdeuAudio = document.getElementById('perdeu'); // Toca som de derrota
+            perdeuAudio.play();
         }
 
         // Função para confetes e comemoração
