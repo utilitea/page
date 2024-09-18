@@ -220,13 +220,22 @@
 
         function playSound(color) {
             if (soundOn) {
-                const audio = document.getElementById(soundMap[color]);
-                if (audio) {
-                    audio.currentTime = 0;
-                    audio.play();
-                }
-            }
-        }
+                 const audio = document.getElementById(soundMap[color]);
+            if (audio) {
+                 console.log("Tentando tocar o som:", soundMap[color]); // Log para verificar se o som está sendo chamado
+                 audio.currentTime = 0; // Reinicia o som
+                 audio.play().then(() => {
+                 console.log("Som tocando com sucesso:", soundMap[color]); // Log se o som tocar corretamente
+            }).catch(error => {
+                console.error("Erro ao tentar tocar o som:", error); // Log se houver erro ao tocar o som
+            });
+           } else {
+                console.error("Elemento de áudio não encontrado para a cor:", color); // Log se o elemento de áudio não for encontrado
+           }
+           } else {
+               console.log("Som está desligado, não tocando:", soundMap[color]); // Log para quando o som estiver desligado
+          }
+       }
 
         function startGame() {
             level = 0;
