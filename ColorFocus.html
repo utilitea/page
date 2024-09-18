@@ -192,6 +192,21 @@
                 font-size: 1rem;
             }
         }
+        #progress-container {
+            width: 100%;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        #progress-bar {
+            width: 0%;
+            height: 20px;
+            background-color: #4caf50;
+            transition: width 0.3s ease;
+        }
+
     </style>
 </head>
 <body>
@@ -216,6 +231,9 @@
             </div>
         </div>
         <p id="message">Clique no botão para começar o jogo!</p>
+<div id="progress-container">
+    <div id="progress-bar"></div>
+</div>
         <button id="start-button">Iniciar Jogo</button>
         <button id="restart-button" style="display:none;">Recomeçar</button>
         <button id="sound-button">Desligar Som</button>
@@ -275,15 +293,18 @@
         }
 
         function nextRound() {
-            if (!gamePaused) {
-                playerSequence = [];
-                level++;
-                sequence.push(colors[Math.floor(Math.random() * colors.length)]);
-                message.textContent = `Nível ${level}`;
-                celebrarVitoria(level);
-                playSequence();
-            }
+            playerSequence = [];
+            level++;
+            sequence.push(colors[Math.floor(Math.random() * colors.length)]);
+            message.textContent = `Nível ${level}`;
+    
+            // Atualiza a barra de progresso
+            updateProgressBar(level);
+
+            celebrarVitoria(level);
+            playSequence();
         }
+
 
         function playSequence() {
             let i = 0;
@@ -419,6 +440,15 @@
 
         startButton.addEventListener('click', startGame);
         restartButton.addEventListener('click', startGame);
+
+        
+        function updateProgressBar(level) {
+            const progressBar = document.getElementById('progress-bar');
+            const progressPercentage = (level % 10) * 10; // Exemplo: a barra se enche a cada 10 níveis
+            progressBar.style.width = `${progressPercentage}%`;
+        }
+
+
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
