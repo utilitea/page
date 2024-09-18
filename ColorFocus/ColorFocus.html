@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Meta Tags para compartilhar no WhatsApp e redes sociais -->
+    <meta property="og:title" content="ColorFocus: Jogo da Memória">
+    <meta property="og:description" content="Desafie sua memória com o jogo ColorFocus! Tente seguir a sequência de cores e divirta-se.">
+    <meta property="og:image" content="https://utilitea.github.io/page/logo.png">
+    <meta property="og:url" content="https://www.seusite.com/jogo"> <!-- Substitua com a URL do seu jogo -->
+    <meta property="og:type" content="website">
+    <link rel="icon" href="logo.png" type="image/png">
+    <title>ColorFocus: Jogo da Memória</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #a8e6ff, #f0f8ff);
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 20px;
+        }
+
+
+        #game-container {
+            text-align: center;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+        h1, h2 {
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        #message {
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+
+        #grid-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-gap: 10px;
+            justify-content: center;
+        }
+
+        .color-box {
+            width: 100%;
+            padding-top: 100%;
+            position: relative;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+       
+       .color-box:hover {
+           transform: scale(1.1);
+           box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+       }
+
+        .color-box.active {
+            transform: scale(1.2);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
+            transition: transform 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
+        }
+
+        .color-box:active::after {
+            content: '';
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        @keyframes ripple {
+            to {
+                transform: scale(3);
+                opacity: 0;
+            }
+        }
+
+
+        #blue { background-color: #0000FF; }
+        #green { background-color: #A8D700; }
+        #yellow { background-color: #FFFF00; }
+        #purple { background-color: #800080; }
+
+        .icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 70%;
+            height: 70%;
+            opacity: 0.5;
+            transition: opacity 0.2s;
+        }
+
+        .color-box.active .icon {
+            opacity: 1;
+        }
+
+        #message {
+            font-size: 1.2rem;
+            margin: 20px 0;
+            word-wrap: break-word;
+            max-width: 100%;
+        }
+
+        #start-button, #restart-button, #sound-button, #continue-button {
+            padding: 10px 20px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            transition: background-color 0.2s;
+            margin: 5px;
+            width: 100%;
+        }
+
+        #start-button:hover, #restart-button:hover, #sound-button:hover, #continue-button:hover {
+            background-color: #0056b3;
+        }
+
+        .title-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        #game-title {
+            font-size: 2.5rem;
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        #game-subtitle {
+            font-size: 1.5rem;
+            margin: 0;
+            font-weight: 300;
+            color: #666;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            #game-title {
+                font-size: 2rem;
+            }
+
+            #game-subtitle {
+                font-size: 1.2rem;
+            }
+
+            .color-box {
+                padding-top: 100%;
+            }
+
+            .icon {
+                width: 60%;
+                height: 60%;
+            }
+
+            #message {
+                font-size: 1rem;
+            }
+
+            #start-button, #restart-button, #sound-button, #continue-button {
+                font-size: 1rem;
+            }
+        }
+        #progress-container {
+            width: 100%;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        #progress-bar {
+            width: 0%;
+            height: 20px;
+            background-color: #4caf50;
+            transition: width 0.3s ease;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="game-container">
+        <div class="title-container">
+            <h1 id="game-title">ColorFocus</h1>
+            <h2 id="game-subtitle">Jogo da memória</h2>
+        </div>
+        <div id="grid-container">
+            <div class="color-box" id="blue">
+                <img src="agua.png" alt="Água" class="icon">
+            </div>
+            <div class="color-box" id="green">
+                <img src="vento.png" alt="Ar" class="icon">
+            </div>
+            <div class="color-box" id="yellow">
+                <img src="fogo.png" alt="Fogo" class="icon">
+            </div>
+            <div class="color-box" id="purple">
+                <img src="terra.png" alt="Terra" class="icon">
+            </div>
+        </div>
+        <p id="message">Clique no botão para começar o jogo!</p>
+<div id="progress-container">
+    <div id="progress-bar"></div>
+</div>
+        <button id="start-button">Iniciar Jogo</button>
+        <button id="restart-button" style="display:none;">Recomeçar</button>
+        <button id="sound-button">Desligar Som</button>
+        <button id="continue-button" style="display:none;">Continuar</button>
+
+        <audio id="do" src="do.mp3"></audio>
+        <audio id="re" src="re.mp3"></audio>
+        <audio id="mi" src="mi.mp3"></audio>
+        <audio id="fa" src="fa.mp3"></audio>
+    </div>
+
+    <script>
+        const colors = ['blue', 'green', 'yellow', 'purple'];
+        let sequence = [];
+        let playerSequence = [];
+        let level = 0;
+        let gamePaused = false;
+
+        const colorBoxes = document.querySelectorAll('.color-box');
+        const startButton = document.getElementById('start-button');
+        const restartButton = document.getElementById('restart-button');
+        const continueButton = document.getElementById('continue-button');
+        const message = document.getElementById('message');
+
+        let soundOn = true;
+
+        document.getElementById('sound-button').addEventListener('click', function() {
+            soundOn = !soundOn;
+            this.textContent = soundOn ? 'Desligar Som' : 'Ligar Som';
+        });
+
+        const soundMap = {
+            blue: 'do',
+            green: 're',
+            yellow: 'mi',
+            purple: 'fa'
+        };
+
+        function playSound(color) {
+            if (soundOn) {
+                const audio = document.getElementById(soundMap[color]);
+                if (audio) {
+                    audio.currentTime = 0;
+                    audio.play();
+                }
+            }
+        }
+
+        function startGame() {
+            level = 0;
+            sequence = [];
+            playerSequence = [];
+            startButton.style.display = 'none';
+            restartButton.style.display = 'none';
+            message.textContent = 'Observe a sequência...';
+            nextRound();
+        }
+
+        function nextRound() {
+            playerSequence = [];
+            level++;
+            sequence.push(colors[Math.floor(Math.random() * colors.length)]);
+            message.textContent = `Nível ${level}`;
+    
+            // Atualiza a barra de progresso
+            updateProgressBar(level);
+
+            celebrarVitoria(level);
+            playSequence();
+        }
+
+
+        function playSequence() {
+            let i = 0;
+            disablePlayerInput();
+            const interval = setInterval(() => {
+                if (!gamePaused) {
+                    flashColor(sequence[i]);
+                    i++;
+                }
+                if (i >= sequence.length) {
+                    clearInterval(interval);
+                    if (!gamePaused) enablePlayerInput();
+                }
+            }, 1000);
+        }
+
+        function flashColor(color) {
+            const box = document.getElementById(color);
+            playSound(color);
+            box.classList.add('active');
+            setTimeout(() => {
+                box.classList.remove('active');
+            }, 500);
+        }
+
+        function enablePlayerInput() {
+            message.textContent = 'Sua vez! Clique na sequência correta.';
+            colorBoxes.forEach(box => {
+                box.addEventListener('click', handlePlayerClick);
+            });
+        }
+
+        function disablePlayerInput() {
+            colorBoxes.forEach(box => {
+                box.removeEventListener('click', handlePlayerClick);
+            });
+        }
+
+        function handlePlayerClick(event) {
+            const clickedColor = event.currentTarget.id;
+            playerSequence.push(clickedColor);
+            flashColor(clickedColor);
+
+            if (playerSequence[playerSequence.length - 1] !== sequence[playerSequence.length - 1]) {
+                gameOver();
+                return;
+            }
+
+            if (playerSequence.length === sequence.length) {
+                disablePlayerInput();
+                setTimeout(nextRound, 1000);
+            }
+        }
+
+        function gameOver() {
+            disablePlayerInput();
+            message.textContent = 'Você errou! Vamos tentar de novo?';
+            restartButton.style.display = 'inline';
+        }
+
+        // Função para confetes e comemoração
+        const festaAudio = new Audio('festa.mp3');
+        const superfestaAudio = new Audio('superfesta.mp3');
+        const megafestaAudio = new Audio('megafesta.mp3');
+
+        function celebrarVitoria(nivel) {
+            if (nivel % 50 === 0) {
+                megaFesta();
+                pausarJogo(megafestaAudio.duration);
+            } else if (nivel % 10 === 0) {
+                superFesta();
+                pausarJogo(superfestaAudio.duration);
+            }
+        }
+
+        function pausarJogo(duracaoFesta) {
+            gamePaused = true;
+            disablePlayerInput();
+            mostrarPopup(duracaoFesta);
+
+            continueButton.style.display = 'inline';
+            continueButton.addEventListener('click', continuarJogo);
+        }
+
+        function continuarJogo() {
+            gamePaused = false;
+            continueButton.style.display = 'none';
+            nextRound();
+        }
+
+        function mostrarPopup(duracao) {
+            const popup = document.createElement('div');
+            popup.textContent = 'Parabéns!! Você está indo muito bem!!';
+            popup.style.position = 'fixed';
+            popup.style.top = '50%';
+            popup.style.left = '50%';
+            popup.style.transform = 'translate(-50%, -50%)';
+            popup.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
+            popup.style.borderRadius = '15px';
+            popup.style.padding = '20px';
+            popup.style.fontFamily = 'Calibri, sans-serif';
+            popup.style.fontSize = '1.5rem';
+            popup.style.textAlign = 'center';
+            popup.style.color = '#333';
+            popup.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.2)';
+            popup.style.zIndex = '1000';
+            document.body.appendChild(popup);
+
+            setTimeout(() => {
+                document.body.removeChild(popup);
+            }, duracao * 1000);
+        }
+
+        function megaFesta() {
+            confetti({
+                particleCount: 500,
+                spread: 120,
+                origin: { y: 0.4 },
+                colors: ['#ff0', '#f00', '#0f0', '#00f', '#ff00ff']
+            });
+            megafestaAudio.play();
+        }
+
+        function superFesta() {
+            confetti({
+                particleCount: 200,
+                spread: 100,
+                origin: { y: 0.6 },
+                colors: ['#ff0', '#f00', '#0f0', '#00f']
+            });
+            superfestaAudio.play();
+        }
+
+        startButton.addEventListener('click', startGame);
+        restartButton.addEventListener('click', startGame);
+
+        
+        function updateProgressBar(level) {
+            const progressBar = document.getElementById('progress-bar');
+            const progressPercentage = (level % 10) * 10; // Exemplo: a barra se enche a cada 10 níveis
+            progressBar.style.width = `${progressPercentage}%`;
+        }
+
+
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+
+</body>
+</html>
