@@ -2,15 +2,15 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- Meta Tags para compartilhar no WhatsApp e redes sociais -->
-<meta property="og:title" content="ColorFocus: Jogo da Memória">
-<meta property="og:description" content="Desafie sua memória com o jogo ColorFocus! Tente seguir a sequência de cores e divirta-se.">
-<meta property="og:image" content="logo.png">
-<meta property="og:url" content="https://utilitea.github.io/page/ColorFocus.html"> <!-- Substitua com a URL do seu jogo -->
-<meta property="og:type" content="website">
-<link rel="icon" href="logo.png" type="image/png">
-<title>ColorFocus: Jogo da Memória</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Meta Tags para compartilhar no WhatsApp e redes sociais -->
+    <meta property="og:title" content="ColorFocus: Jogo da Memória">
+    <meta property="og:description" content="Desafie sua memória com o jogo ColorFocus! Tente seguir a sequência de cores e divirta-se.">
+    <meta property="og:image" content="logo.png">
+    <meta property="og:url" content="https://www.seusite.com/jogo"> <!-- Substitua com a URL do seu jogo -->
+    <meta property="og:type" content="website">
+    <link rel="icon" href="logo.png" type="image/png">
+    <title>ColorFocus: Jogo da Memória</title>
     <style>
         * {
             margin: 0;
@@ -25,7 +25,7 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            padding: 20px; /* Adicionado para espaçamento em telas menores */
+            padding: 20px;
         }
 
         #game-container {
@@ -35,7 +35,7 @@
             border-radius: 10px;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
             width: 100%;
-            max-width: 400px; /* Limita a largura máxima no desktop */
+            max-width: 400px;
         }
 
         h1 {
@@ -52,7 +52,7 @@
 
         .color-box {
             width: 100%;
-            padding-top: 100%; /* Aspect ratio 1:1 */
+            padding-top: 100%;
             position: relative;
             border-radius: 5px;
             cursor: pointer;
@@ -71,12 +71,12 @@
         #purple { background-color: #800080; }
 
         .icon {
-            position: absolute; /* Posicionamento absoluto para centralizar a imagem */
+            position: absolute;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%); /* Centraliza a imagem */
-            width: 70%; /* Tamanho ajustável da imagem */
-            height: 70%; /* Mantém a imagem proporcional */
+            transform: translate(-50%, -50%);
+            width: 70%;
+            height: 70%;
             opacity: 0.5;
             transition: opacity 0.2s;
         }
@@ -102,7 +102,7 @@
             color: white;
             transition: background-color 0.2s;
             margin: 5px;
-            width: 100%; /* Botões ocupam toda a largura no celular */
+            width: 100%;
         }
 
         #start-button:hover, #restart-button:hover, #sound-button:hover {
@@ -113,7 +113,7 @@
             text-align: center;
             margin-bottom: 20px;
         }
-        
+
         #game-title {
             font-size: 2.5rem;
             margin: 0;
@@ -127,7 +127,6 @@
             color: #666;
         }
 
-        /* Media Queries para dispositivos menores */
         @media (max-width: 600px) {
             h1 {
                 font-size: 1.5rem;
@@ -158,7 +157,6 @@
                 font-size: 1rem;
             }
         }
-
     </style>
 </head>
 <body>
@@ -166,7 +164,7 @@
     <div id="game-container">
         <div class="title-container">
             <h1 id="game-title">ColorFocus</h1>
-           <h2 id="game-subtitle">Jogo da memória</h2>
+            <h2 id="game-subtitle">Jogo da memória</h2>
         </div>
         <div id="grid-container">
             <div class="color-box" id="blue">
@@ -220,22 +218,13 @@
 
         function playSound(color) {
             if (soundOn) {
-                 const audio = document.getElementById(soundMap[color]);
-            if (audio) {
-                 console.log("Tentando tocar o som:", soundMap[color]); // Log para verificar se o som está sendo chamado
-                 audio.currentTime = 0; // Reinicia o som
-                 audio.play().then(() => {
-                 console.log("Som tocando com sucesso:", soundMap[color]); // Log se o som tocar corretamente
-            }).catch(error => {
-                console.error("Erro ao tentar tocar o som:", error); // Log se houver erro ao tocar o som
-            });
-           } else {
-                console.error("Elemento de áudio não encontrado para a cor:", color); // Log se o elemento de áudio não for encontrado
-           }
-           } else {
-               console.log("Som está desligado, não tocando:", soundMap[color]); // Log para quando o som estiver desligado
-          }
-       }
+                const audio = document.getElementById(soundMap[color]);
+                if (audio) {
+                    audio.currentTime = 0;
+                    audio.play();
+                }
+            }
+        }
 
         function startGame() {
             level = 0;
@@ -252,6 +241,7 @@
             level++;
             sequence.push(colors[Math.floor(Math.random() * colors.length)]);
             message.textContent = `Nível ${level}`;
+            celebrarVitoria(level);
             playSequence();
         }
 
@@ -312,8 +302,70 @@
             restartButton.style.display = 'inline';
         }
 
+        // Função para confetes e comemoração
+        const festaAudio = new Audio('festa.mp3');
+        const superfestaAudio = new Audio('superfesta.mp3');
+        const megafestaAudio = new Audio('megafesta.mp3');
+
+        function celebrarVitoria(nivel) {
+            if (nivel % 50 === 0) {
+                megaFesta();
+                mostrarPopup(megafestaAudio.duration);
+            } else if (nivel % 10 === 0) {
+                superFesta();
+                mostrarPopup(superfestaAudio.duration);
+            }
+        }
+
+        function mostrarPopup(duracao) {
+            // Mostrar o pop-up e pausar o jogo
+            const popup = document.createElement('div');
+            popup.textContent = 'Parabéns!! Você está indo muito bem!!';
+            popup.style.position = 'fixed';
+            popup.style.top = '50%';
+            popup.style.left = '50%';
+            popup.style.transform = 'translate(-50%, -50%)';
+            popup.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
+            popup.style.borderRadius = '15px';
+            popup.style.padding = '20px';
+            popup.style.fontFamily = 'Calibri, sans-serif';
+            popup.style.fontSize = '1.5rem';
+            popup.style.textAlign = 'center';
+            popup.style.color = '#333';
+            popup.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.2)';
+            popup.style.zIndex = '1000';
+            document.body.appendChild(popup);
+
+            setTimeout(() => {
+                document.body.removeChild(popup);
+            }, duracao * 1000);
+        }
+
+        function megaFesta() {
+            confetti({
+                particleCount: 500,
+                spread: 120,
+                origin: { y: 0.4 },
+                colors: ['#ff0', '#f00', '#0f0', '#00f', '#ff00ff']
+            });
+            megafestaAudio.play();
+        }
+
+        function superFesta() {
+            confetti({
+                particleCount: 200,
+                spread: 100,
+                origin: { y: 0.6 },
+                colors: ['#ff0', '#f00', '#0f0', '#00f']
+            });
+            superfestaAudio.play();
+        }
+
         startButton.addEventListener('click', startGame);
         restartButton.addEventListener('click', startGame);
     </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+
 </body>
 </html>
