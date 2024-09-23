@@ -28,6 +28,10 @@
             padding: 20px;
         }
 
+        body.dark-mode {
+            background: linear-gradient(135deg, #111, #333);
+            color: white;
+        }
 
         #game-container {
             text-align: center;
@@ -39,6 +43,12 @@
             max-width: 400px;
         }
 
+        #game-container.dark-mode {
+            background-color: #222;
+            color: white;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+        }
+
         h1 {
             font-size: 2rem;
             margin-bottom: 20px;
@@ -46,10 +56,10 @@
         h1, h2 {
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
         }
+
         #message {
             text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
         }
-
 
         #grid-container {
             display: grid;
@@ -62,15 +72,15 @@
             width: 100%;
             padding-top: 100%;
             position: relative;
-            border-radius: 5px;
+            border-radius: 15px;
             cursor: pointer;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-       
-       .color-box:hover {
-           transform: scale(1.1);
-           box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-       }
+
+        .color-box:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
+        }
 
         .color-box.active {
             transform: scale(1.2);
@@ -98,7 +108,6 @@
                 opacity: 0;
             }
         }
-
 
         #blue { background-color: #0000FF; }
         #green { background-color: #A8D700; }
@@ -138,6 +147,15 @@
             transition: background-color 0.2s;
             margin: 5px;
             width: 100%;
+        }
+
+        button.dark-mode {
+            background-color: #555;
+            color: white;
+        }
+
+        button.dark-mode:hover {
+            background-color: #333;
         }
 
         #start-button:hover, #restart-button:hover, #sound-button:hover, #continue-button:hover {
@@ -192,6 +210,7 @@
                 font-size: 1rem;
             }
         }
+
         #progress-container {
             width: 100%;
             background-color: #f0f0f0;
@@ -206,7 +225,6 @@
             background-color: #4caf50;
             transition: width 0.3s ease;
         }
-
     </style>
 </head>
 <body>
@@ -231,9 +249,9 @@
             </div>
         </div>
         <p id="message">Clique no botão para começar o jogo!</p>
-<div id="progress-container">
-    <div id="progress-bar"></div>
-</div>
+        <div id="progress-container">
+            <div id="progress-bar"></div>
+        </div>
         <button id="start-button">Iniciar Jogo</button>
         <button id="restart-button" style="display:none;">Recomeçar</button>
         <button id="sound-button">Desligar Som</button>
@@ -245,6 +263,9 @@
         <audio id="fa" src="fa.mp3"></audio>
         <audio id="perdeu" src="perdeu.mp3"></audio>
     </div>
+
+    <!-- Botão de alternância para o modo escuro -->
+    <button id="dark-mode-button" style="position: fixed; top: 10px; right: 10px; z-index: 1000; background-color: #007bff; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer;">Ativar Modo Escuro</button>
 
     <script>
         const colors = ['blue', 'green', 'yellow', 'purple'];
@@ -258,6 +279,10 @@
         const restartButton = document.getElementById('restart-button');
         const continueButton = document.getElementById('continue-button');
         const message = document.getElementById('message');
+        const darkModeButton = document.getElementById('dark-mode-button');
+        const body = document.body;
+        const gameContainer = document.getElementById('game-container');
+        const buttons = document.querySelectorAll('button');
 
         let soundOn = true;
 
@@ -265,6 +290,35 @@
             soundOn = !soundOn;
             this.textContent = soundOn ? 'Desligar Som' : 'Ligar Som';
         });
+
+        // Verifica se o modo escuro está ativado no localStorage
+        if (localStorage.getItem('dark-mode') === 'true') {
+            ativarModoEscuro();
+        }
+
+        darkModeButton.addEventListener('click', function() {
+            if (body.classList.contains('dark-mode')) {
+                desativarModoEscuro();
+            } else {
+                ativarModoEscuro();
+            }
+        });
+
+        function ativarModoEscuro() {
+            body.classList.add('dark-mode');
+            gameContainer.classList.add('dark-mode');
+            buttons.forEach(button => button.classList.add('dark-mode'));
+            darkModeButton.textContent = 'Desativar Modo Escuro';
+            localStorage.setItem('dark-mode', 'true');
+        }
+
+        function desativarModoEscuro() {
+            body.classList.remove('dark-mode');
+            gameContainer.classList.remove('dark-mode');
+            buttons.forEach(button => button.classList.remove('dark-mode'));
+            darkModeButton.textContent = 'Ativar Modo Escuro';
+            localStorage.setItem('dark-mode', 'false');
+        }
 
         const soundMap = {
             blue: 'do',
@@ -305,7 +359,6 @@
             celebrarVitoria(level);
             playSequence();
         }
-
 
         function playSequence() {
             let i = 0;
@@ -450,8 +503,6 @@
             const progressPercentage = (level % 10) * 10; // Exemplo: a barra se enche a cada 10 níveis
             progressBar.style.width = `${progressPercentage}%`;
         }
-
-
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
