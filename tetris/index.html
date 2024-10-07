@@ -163,7 +163,9 @@ const colors = {
 function merge(arena, player) {
   player.matrix.forEach((row, y) => {
     row.forEach((value, x) => {
-      if (value !== 0) arena[y + player.pos.y][x + player.pos.x] = player.color; // Salva a cor da peça
+      if (value !== 0) {
+        arena[y + player.pos.y][x + player.pos.x] = { value, color: player.color };
+      }
     });
   });
 }
@@ -196,8 +198,13 @@ function drawMatrix(matrix, offset) {
   matrix.forEach((row, y) => {
     row.forEach((value, x) => {
       if (value !== 0) {
-        let fillColor = colors[value];  // Atribuir a cor correta à peça
-        let strokeColor = "#000";       // Cor da borda (mais escura)
+        let fillColor, strokeColor = "#000"; // Cor da borda (mais escura)
+
+        if (typeof value === 'object') {
+          fillColor = value.color;
+        } else {
+          fillColor = colors[value];
+        }
 
         // Desenhar cada bloco com bordas arredondadas e preenchimento colorido
         drawRoundedRect(
@@ -215,12 +222,12 @@ function drawMatrix(matrix, offset) {
 
 
 
-    function draw() {
-      context.fillStyle = "#808080"; // Cor atual do fundo da arena
-      context.fillRect(0, 0, canvas.width / scale, canvas.height / scale);
-      drawMatrix(arena, { x: 0, y: 0 });
-      drawMatrix(player.matrix, player.pos, player.color);
-    }
+function draw() {
+  context.fillStyle = "#808080"; // Cor atual do fundo da arena
+  context.fillRect(0, 0, canvas.width / scale, canvas.height / scale);
+  drawMatrix(arena, { x: 0, y: 0 });
+  drawMatrix(player.matrix, player.pos);
+}
 
     function drop() {
       if (isPaused) return;
