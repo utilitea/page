@@ -164,7 +164,7 @@ function merge(arena, player) {
   player.matrix.forEach((row, y) => {
     row.forEach((value, x) => {
       if (value !== 0) {
-        arena[y + player.pos.y][x + player.pos.x] = { value, color: player.color };
+        arena[y + player.pos.y][x + player.pos.x] = { value, color: player.color }; // Adiciona a cor ao objeto da peça
       }
     });
   });
@@ -198,27 +198,28 @@ function drawMatrix(matrix, offset) {
   matrix.forEach((row, y) => {
     row.forEach((value, x) => {
       if (value !== 0) {
-        let fillColor, strokeColor = "#000"; // Cor da borda (mais escura)
+        let fillColor, strokeColor = "#000";
 
         if (typeof value === 'object') {
-          fillColor = value.color;
+          fillColor = value.color;  // Usa a cor da peça já definida
         } else {
           fillColor = colors[value];
         }
 
-        // Desenhar cada bloco com bordas arredondadas e preenchimento colorido
         drawRoundedRect(
           x + offset.x, 
           y + offset.y, 
-          1, 1,        // Dimensões da peça
-          0.3,         // Raio das bordas arredondadas
-          fillColor,   // Cor da peça
-          strokeColor  // Borda escura
+          1, 1,        
+          0.3,         
+          fillColor,   
+          strokeColor  
         );
       }
     });
   });
 }
+
+
 
 
 
@@ -242,14 +243,22 @@ function draw() {
       dropCounter = 0;
     }
 
-    function resetPlayer() {
-      const pieceType = tetrominoes[(Math.random() * tetrominoes.length) | 0];
-      player.matrix = createPiece(pieceType);
-      player.color = colors[pieceType];
-      player.pos.y = 0;
-      player.pos.x = (arena[0].length / 2 | 0) - (player.matrix[0].length / 2 | 0);
-      if (collide(arena, player)) arena.forEach(row => row.fill(0));
-    }
+function resetPlayer() {
+  const pieceType = tetrominoes[(Math.random() * tetrominoes.length) | 0];
+  player.matrix = createPiece(pieceType);
+  player.color = colors[pieceType];  // Atribui a cor da peça com base no tipo gerado
+  player.pos.y = 0;
+  player.pos.x = (arena[0].length / 2 | 0) - (player.matrix[0].length / 2 | 0);
+  
+  // Checa se a nova peça colide imediatamente
+  if (collide(arena, player)) {
+    arena.forEach(row => row.fill(0));  // Limpa a arena se houver uma colisão no início
+    score = 0;  // Reseta a pontuação (opcional)
+    updateScore();  // Atualiza o display da pontuação
+  }
+}
+
+
 
     function arenaSweep() {
       let rowCount = 1;
@@ -319,6 +328,8 @@ document.addEventListener("keyup", event => {
       if (collide(arena, player)) player.pos.x -= offset;
     }
 
+
+
     function rotatePlayer() {
       const pos = player.pos.x;
       let offset = 1;
@@ -339,19 +350,41 @@ document.addEventListener("keyup", event => {
       document.getElementById("pause").innerText = isPaused ? "▶" : "⏸";
     }
 
-    document.getElementById("left").addEventListener("click", () => playerMove(-1));
-    document.getElementById("right").addEventListener("click", () => playerMove(1));
-    document.getElementById("rotate").addEventListener("click", rotatePlayer);
-    document.getElementById("down").addEventListener("click", drop);
-    document.getElementById("pause").addEventListener("click", togglePause);
-    
-    document.getElementById("down").addEventListener("mousedown", () => {
-  isFastDropping = true;  // Inicia queda rápida ao pressionar o botão
-});
 
-document.getElementById("down").addEventListener("mouseup", () => {
-  isFastDropping = false;  // Para queda rápida ao soltar o botão
-});
+
+  
+
+
+    // Movimentação contínua para o botão de mover para esquerda
+    document.getElementById("left").addEventListener("mousedown", () => {
+      playerMove(-1); // Mover uma vez ao clicar
+      moveInterval = setInterval(() => playerMove(-1), 150); // Mover continuamente ao segurar
+    });
+    document.getElementById("left").addEventListener("mouseup", () => clearInterval(moveInterval)); // Parar ao soltar o botão
+    document.getElementById("left").addEventListener("mouseleave", () => clearInterval(moveInterval)); // Parar ao sair do botão
+
+    // Movimentação contínua para o botão de mover para direita
+    document.getElementById("right").addEventListener("mousedown", () => {
+      playerMove(1); // Mover uma vez ao clicar
+      moveInterval = setInterval(() => playerMove(1), 150); // Mover continuamente ao segurar
+    });
+    document.getElementById("right").addEventListener("mouseup", () => clearInterval(moveInterval)); // Parar ao soltar o botão
+    document.getElementById("right").addEventListener("mouseleave", () => clearInterval(moveInterval)); // Parar ao sair do botão
+
+    // Mantém o comportamento existente de movimentação para baixo
+    document.getElementById("down").addEventListener("mousedown", () => {
+      isFastDropping = true;  // Inicia queda rápida ao pressionar o botão
+    });
+    document.getElementById("down").addEventListener("mouseup", () => {
+      isFastDropping = false;  // Para queda rápida ao soltar o botão
+    });
+
+    // Botão para girar a peça
+    document.getElementById("rotate").addEventListener("click", rotatePlayer); // Recolocar o evento de click para rotação
+
+    // Botão para pausar o jogo
+    document.getElementById("pause").addEventListener("click", togglePause); // Evento de click para pausar/despausar
+
 
 
     const player = { pos: { x: 0, y: 0 }, matrix: null, color: null };
