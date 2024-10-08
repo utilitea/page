@@ -3,6 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <meta property="og:title" content="Tetris">
+    <meta property="og:description" content="Jogo eletrônico de quebra-cabeça">
+    <meta property="og:image" content="https://utilitea.github.io/page/tetris/logo.png">
+    <meta property="og:url" content="https://utilitea.github.io/page/tetris/"> <!-- Substitua com a URL do seu jogo -->
+    <meta property="og:type" content="website">
+    <link rel="icon" href="https://utilitea.github.io/page/tetris/logo.png" type="image/png">
   <title>Tetris</title>
   <style>
     body {
@@ -116,11 +123,11 @@ button:active {
     <div id="scoreboard">Pontuação: <span id="score">0</span></div>
     <canvas id="tetris" width="180" height="360"></canvas>
     <div id="controls">
-      <button id="left">◄</button>
-      <button id="down">▼</button>
-      <button id="right">►</button>
-      <button id="rotate">⟳</button>
-      <button id="pause">⏸</button>
+<button id="left"><i class="fas fa-chevron-left"></i></button>
+<button id="down"><i class="fas fa-chevron-down"></i></button>
+<button id="right"><i class="fas fa-chevron-right"></i></button>
+<button id="rotate"><i class="fas fa-redo-alt"></i></button>
+<button id="pause"><i class="fas fa-pause"></i></button>
     </div>
   </div>
 </body>
@@ -215,7 +222,8 @@ function merge(arena, player) {
     });
   });
 }
-function drawRoundedRect(x, y, width, height, radius, fillColor, strokeColor) {
+
+function drawRoundedRect(x, y, width, height, radius, fillColor, strokeColor = "#000") {
   context.beginPath();
   context.moveTo(x + radius, y);
   context.lineTo(x + width - radius, y);
@@ -228,37 +236,41 @@ function drawRoundedRect(x, y, width, height, radius, fillColor, strokeColor) {
   context.quadraticCurveTo(x, y, x + radius, y);
   context.closePath();
 
-  // Preencher com a cor correta
-  context.fillStyle = fillColor;  // Atribui a cor correta antes de preencher
+  context.fillStyle = fillColor;
   context.fill();
 
-  // Adiciona borda escura
-  context.strokeStyle = strokeColor;
-  context.lineWidth = 0.1;
-  context.stroke();
+  if (strokeColor) {
+    context.strokeStyle = strokeColor;
+    context.lineWidth = 0.1;
+    context.stroke();
+  }
 }
 
 
 
-function drawMatrix(matrix, offset) {
+function drawMatrix(matrix, offset, color = null) {
   matrix.forEach((row, y) => {
     row.forEach((value, x) => {
       if (value !== 0) {
         let fillColor, strokeColor = "#000";
 
         if (typeof value === 'object') {
-          fillColor = value.color;  // Usa a cor da peça já definida
+          fillColor = value.color; // Usa a cor da peça já definida
         } else {
           fillColor = colors[value];
         }
 
+        if (color) {
+          fillColor = color; // Usa a cor fornecida, se disponível
+        }
+
         drawRoundedRect(
-          x + offset.x, 
-          y + offset.y, 
-          1, 1,        
-          0.3,         
-          fillColor,   
-          strokeColor  
+          x + offset.x,
+          y + offset.y,
+          1, 1,
+          0.3,
+          fillColor,
+          strokeColor
         );
       }
     });
@@ -266,14 +278,12 @@ function drawMatrix(matrix, offset) {
 }
 
 
-
-
-
 function draw() {
   context.fillStyle = "#808080"; // Cor atual do fundo da arena
-  context.fillRect(0, 0, canvas.width / scale, canvas.height / scale);
+  context.fillRect(0, 0, canvas.width, canvas.height);
   drawMatrix(arena, { x: 0, y: 0 });
   drawMatrix(player.matrix, player.pos);
+  drawGhost();
 }
 
 const dropSound = new Audio('drop.mp3');
@@ -439,13 +449,13 @@ function rotatePlayer() {
 }
 
 
-    function drawGhost() {
-   const ghostPlayer = { ...player, pos: { ...player.pos } };
-   while (!collide(arena, ghostPlayer)) {
-      ghostPlayer.pos.y++;
-   }
-   ghostPlayer.pos.y--;
-   drawMatrix(ghostPlayer.matrix, ghostPlayer.pos, 'rgba(255, 255, 255, 0.3)'); // Cor mais clara
+function drawGhost() {
+  const ghostPlayer = { ...player, pos: { ...player.pos } };
+  while (!collide(arena, ghostPlayer)) {
+    ghostPlayer.pos.y++;
+  }
+  ghostPlayer.pos.y--;
+  drawMatrix(ghostPlayer.matrix, ghostPlayer.pos, '#DCDCDC');
 }
 
 function draw() {
